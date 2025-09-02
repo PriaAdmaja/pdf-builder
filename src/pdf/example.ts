@@ -29,11 +29,11 @@ const pdfBuffer = async (body: { title: string; content: string[] }) => {
 //   });
 
   // Title
-  doc.fontSize(20).text(body.title, { align: "center" });
+  doc.fontSize(18).text(body.title, { align: "center" });
   y = doc.y + 20; // update y after writing title
 
   // Function to write text with paging
-  const writeLine = (text: string, fontSize = 14) => {
+  const writeLine = (text: string, fontSize = 12) => {
     doc.fontSize(fontSize);
 
     const lineHeight = doc.currentLineHeight();
