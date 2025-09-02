@@ -21,6 +21,7 @@ const pdfGenerator = async ({
 
   doc.pipe(stream);
 
+  // Content of pdf file
   content(doc);
 
   //Global Edits to All Pages (Header/Footer, etc)
