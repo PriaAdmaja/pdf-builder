@@ -4,6 +4,9 @@ import { PassThrough } from "stream";
 const pdfBuffer = async (body: { title: string; content: string[] }) => {
   const doc = new PDFDocument({ size: "A4", margin: 50 });
 
+  doc.info.Author = "Bisajual";
+  doc.info.Title = body.title;
+
   const pageHeight = doc.page.height;
   const topMargin = doc.page.margins.top;
   const bottomMargin = doc.page.margins.bottom;
@@ -24,9 +27,9 @@ const pdfBuffer = async (body: { title: string; content: string[] }) => {
   doc.pipe(stream);
 
   // On every new page, add footer
-//   doc.on("pageAdded", () => {
-//     addFooter();
-//   });
+  doc.on("pageAdded", () => {
+    addFooter();
+  });
 
   // Title
   doc.fontSize(18).text(body.title, { align: "center" });
