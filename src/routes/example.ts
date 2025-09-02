@@ -35,7 +35,7 @@ pdfExample.get("/", async () => {
       // Write content
       data.content.forEach((text: string) => {
         doc.fontSize(12).text(text, 50);
-        doc.text(text, 50);
+        doc.moveDown()
       });
     },
   });
