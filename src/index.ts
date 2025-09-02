@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import example from './pdf/example.js'
 import { routes } from "./routes/index.js";
 
 const PORT = 8000;

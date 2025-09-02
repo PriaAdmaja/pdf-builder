@@ -1,16 +1,44 @@
 import { Hono } from "hono";
-import pdfBuffer from "../pdf/example.js";
+import pdfGenerator from "../pdf/pdf-generator.js";
+
 const pdfExample = new Hono();
 
 pdfExample.post("/", async (c) => {
   const body = await c.req.json();
 
-  const pdfFile = await pdfBuffer(body);
+  const pdfFile = await pdfGenerator({
+    filename: "example-pdf",
+    content: (doc) => {
+      // Title
+      doc.fontSize(18).text(body.title, { align: "center" });
+      doc.moveDown();
+
+      // Write content
+      body.content.forEach((text: string) => {
+        doc.fontSize(12).text(text, 50);
+        doc.text(text, 50);
+      });
+    },
+  });
+
   return pdfFile;
 });
 
 pdfExample.get("/", async () => {
-  const pdfFile = await pdfBuffer(data);
+  const pdfFile = await pdfGenerator({
+    filename: "example-pdf",
+    content: (doc) => {
+      // Title
+      doc.fontSize(18).text(data.title, { align: "center" });
+      doc.moveDown();
+
+      // Write content
+      data.content.forEach((text: string) => {
+        doc.fontSize(12).text(text, 50);
+        doc.text(text, 50);
+      });
+    },
+  });
   return pdfFile;
 });
 
