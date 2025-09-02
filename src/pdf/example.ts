@@ -5,52 +5,17 @@ const pdfBuffer = async (body: { title: string; content: string[] }) => {
   const doc = new PDFDocument({ size: "A4", margin: 50 });
   const stream = new PassThrough();
 
-  doc.info.Author = "Bisajual";
-  doc.info.Title = body.title;
-
-  const pageHeight = doc.page.height;
-  const topMargin = doc.page.margins.top;
-  const bottomMargin = doc.page.margins.bottom;
   doc.pipe(stream);
-
-  let y = topMargin;
-  let pageNumber = 0;
-
-  const addFooter = () => {
-    pageNumber++;
-    doc.fontSize(10).fillColor("gray");
-    doc.text(`Page ${pageNumber}`, 0, doc.page.height - 40, {
-      align: "center",
-    });
-    doc.fillColor("black"); // reset color
-  };
 
   // Title
   doc.fontSize(18).text(body.title, { align: "center" });
-  y = doc.y + 20; // update y after writing title
+  doc.moveDown()
 
-  // Function to write text with paging
-  const writeLine = (text: string, fontSize = 12) => {
-    doc.fontSize(fontSize);
-
-    const lineHeight = doc.currentLineHeight();
-
-    // check if content fits, otherwise add page
-    if (y + lineHeight > pageHeight - bottomMargin) {
-      doc.addPage();
-      y = topMargin;
-    }
-
-    doc.text(text, 50, y);
-    y = doc.y + 10; // update y based on where PDFKit left off
-  };
-
-  // Loop content
+  // Write content
   body.content.forEach((text) => {
-    writeLine(text);
+    doc.fontSize(12).text(text, 50)
+    doc.text(text, 50);
   });
-
-  addFooter();
 
   doc.end();
 
