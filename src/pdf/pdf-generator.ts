@@ -24,20 +24,46 @@ const pdfGenerator = async ({
   content(doc);
 
   //Global Edits to All Pages (Header/Footer, etc)
-  let pages = doc.bufferedPageRange();
+  const pages = doc.bufferedPageRange();
   for (let i = 0; i < pages.count; i++) {
     doc.switchToPage(i);
 
-    //Footer: Add page number
-    let oldBottomMargin = doc.page.margins.bottom;
-    doc.page.margins.bottom = 0; //Dumb: Have to remove bottom margin in order to write into it
-    doc.fontSize(10).text(
-      `${i + 1} of ${pages.count}`,
-      50,
-      doc.page.height - oldBottomMargin / 2, // Centered vertically in bottom margin
-      { align: "left" }
-    );
-    doc.page.margins.bottom = oldBottomMargin; // ReProtect bottom margin
+    const oldBottomMargin = doc.page.margins.bottom;
+    doc.page.margins.bottom = 0;
+
+    const formattedDate = new Date().toLocaleString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Jakarta",
+    });
+
+    const createdAt = formattedDate.replace(".", ":") + " WIB";
+
+    // Left footer
+    doc
+      .fontSize(10)
+      .text(
+        `Dicetak pada: ${createdAt}`,
+        50,
+        doc.page.height - oldBottomMargin / 2,
+        { align: "left" }
+      );
+
+    // Right footer
+    doc
+      .fontSize(10)
+      .text(
+        `${i + 1} dari ${pages.count}`,
+        50,
+        doc.page.height - oldBottomMargin / 2,
+        { align: "right" }
+      );
+
+    doc.page.margins.bottom = oldBottomMargin; // restore
   }
 
   // manually flush pages that have been buffered
