@@ -1,9 +1,17 @@
 import { Hono } from "hono";
 import pdfGenerator from "../pdf/pdf-generator.js";
+import { zValidator } from "@hono/zod-validator";
+import z from "zod";
+import { content } from "pdfkit/js/page";
+
+const schema = z.object({
+  title: z.string(),
+  content: z.array(z.string()),
+});
 
 const pdfExample = new Hono();
 
-pdfExample.post("/", async (c) => {
+pdfExample.post("/", zValidator("form", schema), async (c) => {
   const body = await c.req.json();
 
   const pdfFile = await pdfGenerator({
@@ -35,7 +43,7 @@ pdfExample.get("/", async () => {
       // Write content
       data.content.forEach((text: string) => {
         doc.fontSize(12).text(text, 50);
-        doc.moveDown()
+        doc.moveDown();
       });
     },
   });
