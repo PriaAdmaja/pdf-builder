@@ -25,12 +25,6 @@ const pdfBuffer = async (body: { title: string; content: string[] }) => {
     doc.fillColor("black"); // reset color
   };
 
-
-  // On every new page, add footer
-  doc.on("pageAdded", () => {
-    addFooter();
-  });
-
   // Title
   doc.fontSize(18).text(body.title, { align: "center" });
   y = doc.y + 20; // update y after writing title
